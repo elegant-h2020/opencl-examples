@@ -23,11 +23,30 @@
  * SOFTWARE.
  */
  
-__kernel void saxpy(__global float * a,
-                    __global float * b,
-                    __global float * c,
+__kernel void saxpy(__global uchar * a,
+                    __global uchar * b,
+                    __global uchar * c,
                     const float alpha)
 {
-	int idx = get_global_id(0);
-	c[idx]  =  a[idx] * alpha + b[idx];
-}
+  float f_12, f_8, f_10;
+  int i_3;
+  ulong ul_9, ul_7, ul_11, ul_2, ul_1, ul_0;
+  long l_4, l_5, l_6;
+
+  // BLOCK 0
+  ul_0  =  (ulong) a;
+  ul_1  =  (ulong) b;
+  ul_2  =  (ulong) c;
+  i_3  =  get_global_id(0);
+  l_4  =  (long) i_3;
+  l_5  =  l_4 << 2;
+  l_6  =  l_5;// + 24L;
+  ul_7  =  ul_1 + l_6;
+  f_8  =  *((__global float *) ul_7);
+  ul_9  =  ul_0 + l_6;
+  f_10  =  *((__global float *) ul_9);
+  ul_11  =  ul_2 + l_6;
+  f_12  =  fma(f_10, alpha, f_8);
+  *((__global float *) ul_11)  =  f_12;
+  return;
+}  //  kernel
