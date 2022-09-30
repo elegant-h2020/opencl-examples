@@ -55,9 +55,9 @@ float alpha;
 
 // Variables
 size_t datasize;
-float *A; //float
-float *B; //float
-float *C; //float
+float *A;
+float *B;
+float *C;
 
 string platformName;
 cl_uint numPlatforms;
@@ -280,7 +280,6 @@ int runKernel() {
     status |= clSetKernelArg(kernel, 1, sizeof(cl_mem), &d_B);
     status |= clSetKernelArg(kernel, 2, sizeof(cl_mem), &d_C);
     status |= clSetKernelArg(kernel, 3, sizeof(cl_float), &alpha);
-    //status |= clSetKernelArg(kernel, 4, sizeof(cl_int), &elements);
 
     size_t globalWorkSize[1];
     size_t localWorkSize[1];
@@ -382,6 +381,14 @@ int main(int argc, char **argv) {
         double total = chrono::duration_cast<chrono::nanoseconds>(end_time - start_time).count();
         totalTime.push_back(total);
 
+        // Print info ocl timers
+        cout << "Iteration: " << i << endl;
+        cout << "Write    : " << writeTime << endl;
+        cout << "X        : " << kernelTime << endl;
+        cout << "Reading  : " << readTime << endl;
+        cout << "C++ total: " << total << endl;
+        cout << "\n";
+
         if (CHECK_RESULT) {
             bool valid = true;
             for (int i = 0; i < elements; i++) {
@@ -397,14 +404,8 @@ int main(int argc, char **argv) {
             } else {
                 cout << "Result is not correct" << endl;
             }
+            cout << "\n";
         }
-        // Print info ocl timers
-        cout << "Iteration: " << i << endl;
-        cout << "Write    : " << writeTime << endl;
-        cout << "X        : " << kernelTime << endl;
-        cout << "Reading  : " << readTime << endl;
-        cout << "C++ total: " << total << endl;
-        cout << "\n";
     }
 
     freeMemory();
