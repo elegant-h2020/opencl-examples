@@ -246,8 +246,8 @@ void hostDataInitialization(int elements) {
 
     #pragma omp parallel for
     for (int i = 0; i < elements; i++) {
-        A[i] = 2.0;
-        B[i] = 4.0;
+        A[i] = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+        B[i] = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
     }
 }
 
@@ -392,7 +392,7 @@ int main(int argc, char **argv) {
         if (CHECK_RESULT) {
             bool valid = true;
             for (int i = 0; i < elements; i++) {
-                if (C[i] != (alpha * A[i]) + B[i]) {
+                if (abs(C[i] - ((alpha * A[i]) + B[i])) > 0.01f) {
                     cout << C[i] << "  != " << (alpha * A[i]) + B[i] << " ::IDX: " << i << endl;
                     valid = false;
                     break;
