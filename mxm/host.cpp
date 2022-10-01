@@ -252,11 +252,10 @@ void hostDataInitialization(int elements) {
     B_seq = (float *) malloc(datasize);
     C_seq = (float *) malloc(datasize);
 
-    //#pragma omp parallel for
     for (int i = 0; i < elements * elements; i++) {
-        A[i] = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/elements));//2.0*i+1; //(float)(rand() / ( 1000000 / elements));
+        A[i] = 4.0f;
         A_seq[i] = A[i];
-        B[i] = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/elements));//4.0*i-1; //(float)(rand() / ( 1000000 / elements));
+        B[i] = i;
         B_seq[i] = B[i];
     }
 }
@@ -421,7 +420,7 @@ int main(int argc, char **argv) {
             bool valid = true;
             for (int i = 0; i < elements; i++) {
                 for (int j = 0; j < elements; j++) {
-                    float diff = abs(C[i * elements + j] - C_seq[i * elements + j]);
+                    float diff = fabs(C[i * elements + j] - C_seq[i * elements + j]);
                     if (diff > 0.1f) {
                         valid = false;
                         break;
