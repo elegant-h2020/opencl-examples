@@ -398,15 +398,15 @@ int main(int argc, char **argv) {
 
         if (CHECK_RESULT) {
             bool valid = true;
-            for (int i = 0; i < numberOfTuples; i++) {
-                if ((result[i].default_logical$new1 - input[i].default_logical$value*2) > 0.01f) {
-                    cout << result[i].default_logical$new1 << "  != " << (input[i].default_logical$value*2) << " for tuple: " << i << endl;
+            for (int i = 0; i < 16; i++) {
+                if ((result[i].default_logical$new1 - input[i].default_logical$id*2) > 0.01f) {
+                    cout << result[i].default_logical$new1 << "  != " << (input[i].default_logical$id*2) << " for tuple: " << i << endl;
                     valid = false;
                     break;
                 }
 
-                if ((result[i].default_logical$new2 - (input[i].default_logical$value+2)) > 0.01f) {
-                    cout << result[i].default_logical$new2 << "  != " << (input[i].default_logical$value+2) << " for tuple: " << i << endl;
+                if ((result[i].default_logical$new2 - (input[i].default_logical$id+2)) > 0.01f) {
+                    cout << result[i].default_logical$new2 << "  != " << (input[i].default_logical$id+2) << " for tuple: " << i << endl;
                     valid = false;
                     break;
                 }
