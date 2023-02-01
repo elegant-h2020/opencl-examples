@@ -255,7 +255,7 @@ void hostDataInitialization(int elements) {
 
 //    #pragma omp parallel for
     for (int i = 0; i < numberOfTuples; i++) {
-        input[i].default_logical$id=i;
+        input[i].default_logical$id=1;
         input[i].default_logical$value=i;
     }
 
@@ -287,8 +287,20 @@ void writeBuffer() {
 int runKernel() {
     cl_int status;
     status = clSetKernelArg(kernel, 0, sizeof(cl_mem), &d_input);
-    status |= clSetKernelArg(kernel, 1, sizeof(cl_mem), &d_result);
-    status |= clSetKernelArg(kernel, 2, sizeof(cl_float), &numberOfTuples);
+    if (CL_SUCCESS != status) {
+        cout << "Could not set kernel parameter (d_input): " << status << endl;
+	return status;
+    }
+    status = clSetKernelArg(kernel, 1, sizeof(cl_mem), &d_result);
+    if (CL_SUCCESS != status) {
+        cout << "Could not set kernel parameter (d_result): " << status << endl;
+	return status;
+    }
+    status = clSetKernelArg(kernel, 2, sizeof(cl_float), &numberOfTuples);
+    if (CL_SUCCESS != status) {
+        cout << "Could not set kernel parameter (number of tuples): " << status << endl;
+	return status;
+    }
 
     size_t globalWorkSize[1];
     size_t localWorkSize[1];
@@ -296,8 +308,16 @@ int runKernel() {
     globalWorkSize[0] = numberOfTuples;
     localWorkSize[0] = LOCAL_WORK_SIZE;
 
-    clEnqueueNDRangeKernel(commandQueue, kernel, 1, NULL, globalWorkSize, NULL, 0, NULL, &kernelEvent);
-    clEnqueueReadBuffer(commandQueue, d_result, CL_TRUE, 0, sizeof(OutputRecord) * numberOfTuples, result, 0, NULL, &readEvent1);
+    status = clEnqueueNDRangeKernel(commandQueue, kernel, 1, NULL, globalWorkSize, NULL, 0, NULL, &kernelEvent);
+    if (CL_SUCCESS != status) {
+        cout << "Could not enqueue kernel: " << status << endl;
+	return status;
+    }
+    status = clEnqueueReadBuffer(commandQueue, d_result, CL_TRUE, 0, sizeof(OutputRecord) * numberOfTuples, result, 0, NULL, &readEvent1);
+    if (CL_SUCCESS != status) {
+        cout << "Could not read results from device: " << status << endl;
+	return status;
+    }
     return status;
 }
 
