@@ -191,7 +191,7 @@ int openclInitialization() {
     cl_platform_id platform = platforms[platformId];
     std::cout << "Using platform: " << platformId << " --> " << platformName << std::endl;
 
-    status = clGetDeviceIDs(platform, CL_DEVICE_TYPE_ALL, 0, NULL, &numDevices);
+    status = clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, 0, NULL, &numDevices);
 
     if (status != CL_SUCCESS) {
         cout << "[WARNING] Using CPU, no GPU available" << endl;
@@ -201,7 +201,7 @@ int openclInitialization() {
     } else {
         devices = (cl_device_id *) malloc(numDevices * sizeof(cl_device_id));
         cout << "Using accelerator" << endl;
-        status = clGetDeviceIDs(platform, CL_DEVICE_TYPE_ALL, numDevices, devices, NULL);
+        status = clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, numDevices, devices, NULL);
 
         char buf[1000];
         clGetDeviceInfo(devices[0], CL_DEVICE_NAME, sizeof(buf), buf, NULL);
