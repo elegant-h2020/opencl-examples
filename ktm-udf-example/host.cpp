@@ -371,7 +371,7 @@ float radians (float degree) {
     return degree * (pi/180);
 }
 
-AggregationInput* map(CanData* value, int elements) {
+AggregationInput *map_riding_data(CanData *value, int elements) {
     AggregationInput *output = (AggregationInput *) malloc(output_size);
     for (int i = 0; i < elements; i++) {
         input[i].time=i;
@@ -443,7 +443,7 @@ int main(int argc, char **argv) {
         cout << "C++ total: " << total << endl;
         cout << "\n";
 
-        AggregationInput* result_seq = map(input, elements);
+        AggregationInput *result_seq = map_riding_data(input, elements);
         // matrixVectorMultiplication(A_seq, B_seq, C_seq, elements);
 
         if (CHECK_RESULT) {
