@@ -33,6 +33,8 @@
 #include <algorithm>
 #include <math.h>
 
+#include "../external/rapidcsv/src/rapidcsv.h"
+
 using namespace std;
 
 #define CL_USE_DEPRECATED_OPENCL_2_0_APIS
@@ -62,6 +64,7 @@ const int LOCAL_WORK_SIZE = 256;
 const int ITERATIONS = 1;
 
 int elements = 1024;
+char *file = NULL;
 
 // Variables
 size_t input_size;
@@ -242,6 +245,37 @@ int openclInitialization() {
     return status;
 }
 
+bool read_data(CanData *data, int const elements) {
+    // char const *file = NULL;
+    // if (!(file = std::getenv("FILE"))) {
+    //     cerr << R"(Environment variable "FILE" is not set)" << endl;
+    //     exit(EXIT_FAILURE);
+    // }
+
+    rapidcsv::Document doc(file, rapidcsv::LabelParams(),
+                           rapidcsv::SeparatorParams('*'));
+    auto time_column = doc.GetColumn<float>("Time");
+    auto lean_angle_column = doc.GetColumn<float>("ABS_Lean_Angle");
+    auto pitch_info_column = doc.GetColumn<float>("ABS_Pitch_Info");
+    auto front_wheel_speed_column =
+        doc.GetColumn<float>("ABS_Front_Wheel_Speed");
+
+    if (time_column.size() < elements) {
+        cerr << "CSV must contain at least " << elements << " value rows "
+             << endl;
+        exit(EXIT_FAILURE);
+    }
+
+    for (auto i = 0u; i < elements; i++) {
+        data[i].time = time_column[i];
+        data[i].abs_lean_angle = lean_angle_column[i];
+        data[i].abs_pitch_info = pitch_info_column[i];
+        data[i].abs_front_wheel_speed = front_wheel_speed_column[i];
+    }
+
+    return true;
+}
+
 void hostDataInitialization(int elements) {
     input_size = sizeof(CanData) * elements;
     output_size = sizeof(AggregationInput) * elements;
@@ -252,15 +286,7 @@ void hostDataInitialization(int elements) {
     input = (CanData *) clEnqueueMapBuffer(commandQueue, ddInput, CL_TRUE, CL_MAP_WRITE, 0, input_size, 0, NULL, NULL, NULL);
     result = (AggregationInput *) clEnqueueMapBuffer(commandQueue, ddResult, CL_TRUE, CL_MAP_READ, 0, output_size, 0, NULL, NULL, NULL);
 
-    srand((unsigned)time(NULL));
-    //#pragma omp parallel for
-    for (int i = 0; i < elements; i++) {
-        float random_value = (float) rand()/RAND_MAX;
-        input[i].time=i;
-        input[i].abs_lean_angle=random_value;
-        input[i].abs_pitch_info=i;
-        input[i].abs_front_wheel_speed=i;
-    }
+    read_data(input, elements);
 }
 
 int allocateBuffersOnGPU() {
@@ -361,11 +387,12 @@ AggregationInput* map(CanData* value, int elements) {
 }
 
 int main(int argc, char **argv) {
-    if (argc > 2) {
+    if (argc > 3) {
         platformId = atoi(argv[1]);
         elements = atoi(argv[2]);
+        file = argv[3];
     } else {
-        cout << "Run: ./host <platformId> <elements>" << endl;
+        cout << "Run: ./host <platformId> <elements> <file>" << endl;
         return -1;
     }
 
