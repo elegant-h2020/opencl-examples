@@ -1,11 +1,11 @@
 __kernel void map(__global uchar *value, __global uchar *output, __private int elements)
 {
-  ulong ul_0, ul_1, ul_14, ul_8; 
-  float f_24, f_22, f_23, f_28, f_26, f_27, f_16, f_17, f_15, f_20, f_21, f_18, f_19; 
-  int i_2, i_3, i_4, i_5, i_10, i_11, i_29; 
-  long l_6, l_7, l_12, l_13; 
-  float4 v4f_9; 
+  ulong ul_1, ul_8, ul_14, ul_0; 
   float3 v3f_25; 
+  long l_6, l_7, l_12, l_13; 
+  int i_11, i_10, i_5, i_4, i_3, i_2, i_29; 
+  float f_28, f_27, f_26, f_24, f_23, f_22, f_21, f_20, f_19, f_18, f_17, f_16, f_15; 
+  float4 v4f_9; 
 
   // BLOCK 0
   ul_0  =  (ulong) value;
@@ -27,14 +27,15 @@ __kernel void map(__global uchar *value, __global uchar *output, __private int e
     l_12  =  (long) i_11;
     l_13  =  l_12 << 2;
     ul_14  =  ul_1 + l_13;
-    f_15  =  v4f_9.s3 / 3.6F;
-    f_16  =  pow(f_15, 2.0F);
-    f_17  =  radians(v4f_9.s1);
-    f_18  =  native_cos(f_17);
-    f_19  =  native_sin(f_17);
-    f_20  =  f_18 / f_19;
-    f_21  =  fabs(f_20);
-    f_22  =  f_16 * f_21;
+    f_15  =  radians(v4f_9.s1);
+    //f_15  =  v4f_9.s1;
+    f_16  =  native_cos(f_15);
+    f_17  =  native_sin(f_15);
+    f_18  =  f_16 / f_17;
+    f_19  =  v4f_9.s3 / 3.6F;
+    f_20  =  pow(f_19, 2.0F);
+    f_21  =  f_18 * f_20;
+    f_22  =  fabs(f_21);
     f_23  =  f_22 / 9.81F;
     f_24  =  fabs(v4f_9.s1);
     f_26  =  f_23;
