@@ -398,7 +398,7 @@ int main(int argc, char **argv) {
     }
 
     cout << "OpenCL KTM Map " << endl;
-    cout << "Number of Elements = " << elements * elements << endl;
+    cout << "Number of Elements = " << elements << endl;
 
     vector<long> kernelTimers;
     vector<long> writeTimers;
@@ -445,7 +445,6 @@ int main(int argc, char **argv) {
         cout << "\n";
 
         AggregationInput *result_seq = map_riding_data(input, elements);
-        // matrixVectorMultiplication(A_seq, B_seq, C_seq, elements);
 
         if (CHECK_RESULT) {
             bool valid = true;
