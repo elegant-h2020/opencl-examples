@@ -1,4 +1,4 @@
-__kernel void map(__global uchar *value, __global uchar *output)
+__kernel void map(__global uchar *value, __global uchar *output, __private int elements)
 {
   ulong ul_1, ul_8, ul_14, ul_0; 
   float3 v3f_25; 
@@ -14,7 +14,7 @@ __kernel void map(__global uchar *value, __global uchar *output)
   i_3  =  get_global_id(0);
   // BLOCK 1 MERGES [0 2 ]
   i_4  =  i_3;
-  for(;i_4 < 1024;)
+  for(;i_4 < elements;)
   {
     // BLOCK 2
     i_5  =  i_4 << 2;
@@ -27,8 +27,8 @@ __kernel void map(__global uchar *value, __global uchar *output)
     l_12  =  (long) i_11;
     l_13  =  l_12 << 2;
     ul_14  =  ul_1 + l_13;
-    //f_15  =  radians(v4f_9.s1);
-    f_15  =  v4f_9.s1;
+    f_15  =  radians(v4f_9.s1);
+    //f_15  =  v4f_9.s1;
     f_16  =  native_cos(f_15);
     f_17  =  native_sin(f_15);
     f_18  =  f_16 / f_17;

@@ -311,6 +311,7 @@ int runKernel() {
     cl_int status;
     status = clSetKernelArg(kernel, 0, sizeof(cl_mem), &d_input);
     status |= clSetKernelArg(kernel, 1, sizeof(cl_mem), &d_result);
+    status |= clSetKernelArg(kernel, 2, sizeof(int), &elements);
 
     size_t globalWorkSize[1];
     size_t localWorkSize[3];
@@ -375,8 +376,8 @@ AggregationInput *map_riding_data(CanData *value, int elements) {
     AggregationInput *output = (AggregationInput *) malloc(output_size);
     for (int i = 0; i < elements; i++) {
         input[i].time=i;
-        // float radians_lean = (float) radians(value[i].abs_lean_angle);
-        float radians_lean = (float) value[i].abs_lean_angle;
+        float radians_lean = (float) radians(value[i].abs_lean_angle);
+        //float radians_lean = (float) value[i].abs_lean_angle;
         float cotValue = (float) (cos(radians_lean) / sin(radians_lean));
         float speedValue = (float) pow(value[i].abs_front_wheel_speed / 3.6F, 2);
         output[i].radius = (abs(cotValue) * speedValue) / 9.81F;
